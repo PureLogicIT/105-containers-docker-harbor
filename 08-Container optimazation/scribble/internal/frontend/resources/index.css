@@ -1,0 +1,302 @@
+* {
+    border: none;
+    margin: 0;
+}
+
+/*root end*/
+
+#logo {
+    width: 50vw;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#home-choices {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+}
+
+.home-choice-header {
+    display: flex;
+}
+
+.home-choice-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    flex: 1;
+}
+
+.home-choice-inner {
+    row-gap: 1rem;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.home-choice {
+    background-color: var(--pane-background);
+    padding: 1.5rem;
+    border-radius: 1.3rem;
+    overflow: hidden;
+    width: min(42.5vw, 35rem);
+    height: 55vh;
+}
+
+.home {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+}
+
+@media (max-width: 1000px) or (orientation: portrait) {
+    textarea.input-item {
+        height: 3rem;
+    }
+
+    #lobby-join-choice {
+        flex: 1;
+        margin-bottom: 1rem;
+    }
+
+    .home-choice {
+        height: initial;
+    }
+
+    #logo {
+        width: 95vw;
+        max-height: 10vh;
+        margin-left: 2.5vw;
+        margin-right: 2.5vw;
+        margin-top: 0;
+    }
+
+    #home-choices {
+        flex-direction: column;
+        /* 3vh margin + 10vh logo + 87vh = 100vh */
+        height: 87vh;
+    }
+
+    .home-choice {
+        width: 90vw;
+        padding: 3vw;
+    }
+
+    #home-choices>.home-choice:nth-child(1) {
+        height: max-content;
+    }
+
+    #home-choices>.home-choice:nth-child(3) {
+        flex: 1;
+    }
+}
+
+#lobby-list {
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+    gap: 0.25rem;
+}
+
+.language-flag {
+    line-height: 2rem;
+    font-size: 2rem;
+    text-shadow:
+        -2px -2px 0 #AAA,
+        2px -2px 0 #AAA,
+        -2px 2px 0 #AAA,
+        2px 2px 0 #AAA;
+}
+
+.lobby-list-item>* {
+    user-select: none;
+}
+
+.lobby-list-item {
+    font-size: 1.5rem;
+    display: flex;
+    flex-direction: row;
+    background-color: white;
+    padding: 0.5rem 1rem 0.5rem 1rem;
+}
+
+.lobby-list-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    flex: 1;
+}
+
+.lobby-list-row {
+    display: flex;
+    flex-direction: row;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.lobby-list-item-info-pair {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.lobby-list-icon-loading {
+    border-radius: 0.75rem;
+    background-color: black;
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% {
+        background-color: rgb(161, 160, 160);
+    }
+
+    50% {
+        background-color: rgb(228, 228, 228);
+    }
+
+    100% {
+        background-color: rgb(161, 160, 160);
+    }
+}
+
+.lobby-list-item-icon {
+    width: 2rem;
+    height: 2rem;
+    align-self: center;
+}
+
+.lobby-list-item:hover {
+    background-color: var(--component-hover-lighter-background);
+}
+
+/* .lobby-list-item.selected {
+    background-color: var(--component-focus-background);
+} */
+
+.lobby-list-placeholder {
+    display: flex;
+    width: 100%;
+    flex: 1;
+}
+
+.lobby-list-placeholder>* {
+    margin: auto;
+    max-width: 80%;
+}
+
+.join-button {
+    align-self: center;
+    height: 3rem;
+    width: 5rem;
+    font-size: 1.5rem;
+    /* Since the buttons are the same color as the background, we use a boder,
+     * even though it isn't consistent. */
+    border: 1px solid gray;
+}
+
+.custom-tag {
+    font-size: 0.75em;
+    background-color: #DDD;
+    border-radius: 1rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem
+}
+
+#lobby-create {
+    display: grid;
+    grid-template-columns: max-content auto;
+    column-gap: 1rem;
+    row-gap: 0.5rem;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+    flex: 1;
+    grid-template-rows: max-content max-content max-content max-content max-content max-content max-content auto;
+}
+
+.lobby-create-label {
+    font-weight: 600;
+}
+
+.lobby-create-errors {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    background-color: #ff6961;
+    border-radius: 1rem;
+    padding: 0.5rem;
+}
+
+.create-buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+}
+
+.create-button {
+    height: 2rem;
+    flex: 1;
+}
+
+.number-input {
+    display: flex;
+    flex-direction: row;
+    padding: 0;
+    border-radius: var(--component-border-radius);
+    border: 2px hidden;
+}
+
+.number-input>button {
+    width: 1.5rem;
+    background-color: color-mix(in srgb, var(--component-base-color), #000 5%)
+}
+
+.number-input>button:hover {
+    background-color: var(--component-hover-background);
+}
+
+.number-input>button:focus {
+    background-color: var(--component-focus-background);
+}
+
+.number-decrement {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.number-increment {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.number-input>input {
+    flex: 1;
+    border-radius: 0;
+    -webkit-appearance: textfield;
+    appearance: textfield;
+}
+
+.number-input>input::-webkit-inner-spin-button,
+.number-input>input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+
+.reload-spinner {
+    animation-name: spin;
+    animation-duration: 1000ms;
+    animation-iteration-count: infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
