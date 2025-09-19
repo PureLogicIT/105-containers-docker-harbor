@@ -1,0 +1,19 @@
+services:
+  ollama:
+    image: ollama/ollama
+    volumes:
+    - ollama:/root/.ollama
+  webui:
+    image: ghcr.io/open-webui/open-webui:main-slim
+    environment:
+      OLLAMA_BASE_URL: http://ollama:11434
+      ENABLE_OPENAI_API: false
+      OFFLINE_MODE: true
+    volumes:
+    - open-webui:/app/backend/data
+    ports:
+    - 8080:8080
+
+volumes:
+  open-webui:
+  ollama:

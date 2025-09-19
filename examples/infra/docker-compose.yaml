@@ -1,0 +1,96 @@
+services:
+  proxy:
+    image: jwilder/nginx-proxy
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./nginx-certs/:/etc/nginx/certs
+    ports:
+      - 80:80
+      - 443:443
+
+  git:
+    image: docker.gitea.com/gitea
+    environment:
+      USER_UID: 1000
+      USER_GID: 1000
+      VIRTUAL_HOST: git.dev.domain.ca
+      VIRTUAL_PORT: 3000
+    restart: always
+    volumes:
+      - gitea:/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "22:22"
+
+  assetmanager:
+    image: linuxserver/snipe-it
+    container_name: assets
+    depends_on:
+      - mysql
+    environment:
+      - VIRTUAL_HOST=assets.intra.domain.ca
+      - VIRTUAL_PORT=80
+      - CERT_NAME=intra.domain.ca
+      - APP_TIMEZONE=America/Toronto
+      - APP_URL=https://assets.intra.domain.ca
+      - NGINX_APP_URL=https://assets.intra.domain.ca
+      - MYSQL_PORT_3306_TCP_ADDR=mysql
+      - DB_PORT=3306
+      - MYSQL_DATABASE=snipeit
+      - MYSQL_USER=snipeit
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MAIL_PORT_587_TCP_ADDR=smtp.office365.com
+      - MAIL_ENV_FROM_ADDR=notifications@domain.ca
+      - MAIL_ENV_FROM_NAME=IT Support
+      - MAIL_REPLYTO_ADDR=itsupport@domain.ca
+      - MAIL_PORT_587_TCP_PORT=587
+      - MAIL_ENV_ENCRYPTION=tls
+      - MAIL_ENV_USERNAME=notifications@domain.ca
+      - MAIL_ENV_PASSWORD=${SMTP_PASSWORD}
+      - PUID=1001
+      - PGID=1001
+    volumes:
+      - ./vols/snipeit/config:/config
+    restart: unless-stopped
+
+  mysql:
+    image: mariadb
+    container_name: mysql
+    restart: always
+    environment:
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_USER=snipeit
+    volumes:
+      - snipeit_mysql:/var/lib/mysql
+
+  bitwarden:
+    image: vaultwarden/server
+    container_name: bitwarden
+    environment:
+      - PUID=1001
+      - PGID=1001
+      - VIRTUAL_HOST=bitwarden.domain.ca
+      - VIRTUAL_PORT=80
+      - SIGNUPS_DOMAINS_WHITELIST=domain.ca
+      - DOMAIN=https://bitwarden.domain.ca
+      - ADMIN_TOKEN=${BIT_ADMIN_TOKEN}
+      - SMTP_HOST=smtp.office365.com
+      - SMTP_FROM=notifications@domain.ca
+      - SMTP_PORT=587
+      - SMTP_SSL=true
+      - SMTP_USERNAME=notifications@domain.ca
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
+      - YUBICO_CLIENT_ID=79675
+      - YUBICO_SECRET_KEY=${YUBICO_KEY}
+    volumes:
+      - bitwarden_data:/data
+      - bitwarden_ssl:/ssl
+    restart: always
+
+
+volumes:
+  bitwarden_data:
+  bitwarden_ssl:
+  snipeit_mysql:
+  gitea:

@@ -1,0 +1,25 @@
+services:
+  wildcard:
+    image: certbot/dns-cloudflare
+    command: certonly --non-interactive --dns-cloudflare --dns-cloudflare-credentials /cloudflare.ini --agree-tos -d '*.domain.ca' -d domain.ca --email admin@domain.ca
+    volumes:
+      - ./cloudflare.ini:/cloudflare.ini
+      - ./letsencrypt:/etc/letsencrypt
+      - ./letsencrypt/log:/var/log/letsencrypt
+
+
+  intra:
+    image: certbot/dns-cloudflare
+    command: certonly --non-interactive --dns-cloudflare --dns-cloudflare-credentials /cloudflare.ini --agree-tos -d '*.intra.domain.ca' --email admin@domain.ca
+    volumes:
+      - ./cloudflare.ini:/cloudflare.ini
+      - ./letsencrypt:/etc/letsencrypt
+      - ./letsencrypt/log:/var/log/letsencrypt
+
+  renew:
+    image: certbot/dns-cloudflare
+    command: renew --non-interactive --no-self-upgrade --dns-cloudflare --dns-cloudflare-credentials /cloudflare.ini --agree-tos --email admin@domain.ca
+    volumes:
+      - ./cloudflare.ini:/cloudflare.ini
+      - ./letsencrypt:/etc/letsencrypt
+      - ./letsencrypt/log:/var/log/letsencrypt

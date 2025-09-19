@@ -1,0 +1,68 @@
+---
+services:
+    proxy:
+        image: jwilder/nginx-proxy:latest
+        container_name: proxy
+        ports:
+            - 80:80
+            - 443:443
+        networks:
+            - default
+            - media_default
+            - netbox-docker_default
+            - nextcloud_default
+        volumes:
+            - /var/run/docker.sock:/tmp/docker.sock:ro
+            - nginx_certs:/etc/nginx/certs
+            - ./proxy_extra.conf:/etc/nginx/conf.d/extra.conf
+            - ./network_internal.conf:/etc/nginx/network_internal.conf
+            - ./virthost_conf:/etc/nginx/vhost.d:ro
+        restart: always
+    keycloak:
+        image: quay.io/keycloak/keycloak
+        container_name: keycloak
+        environment:
+            - VIRTUAL_HOST=keycloak.jql
+            - VIRTUAL_PORT=8080
+            - NETWORK_ACCESS=internal
+            - KEYCLOAK_USER=admin
+            - KEYCLOAK_PASSWORD=${KEYCLOAK_PASSWORD}
+            - DB_ADDR=mariadb
+            - DB_PORT=3306
+            - DB_USER=root
+            - DB_PASSWORD=${MYSQL_PASSWORD}
+            - JDBC_PARAMS="ssl=false" 
+            - PROXY_ADDRESS_FORWARDING=true
+        ports:
+            - 8080:8080
+            - 9990:9990
+    mariadb:
+        image: mariadb
+        container_name: mariadb
+        environment:
+            - MYSQL_DATABASE=keycloak
+            - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
+        volumes:
+            - mariadb_data:/var/lib/mysql
+    cloudflared:
+        image: cloudflare/cloudflared
+        container_name: cloudflared
+        volumes:
+            #- ./cloudflared:/etc/cloudflared
+            - ./cloudflared:/home/nonroot/.cloudflared
+              #command: tunnel --no-autoupdate --hostname docker.justinql.ca --url http://proxy:80
+              #command: tunnel route dns docker jellyfin
+        command: tunnel run
+        restart: always
+
+volumes:
+    nginx_certs: {}
+    mariadb_data: {}
+    cloudflared_data: {}
+networks:
+    nextcloud_default:
+        external: true
+    media_default:
+        external: true
+    netbox-docker_default:
+        external: true
